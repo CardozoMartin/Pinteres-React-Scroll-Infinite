@@ -1,10 +1,14 @@
 
 
 import { useEffect } from 'react';
-import './App.css'
 import NavBar from './components/NavBar'
 import { createApi } from "unsplash-js";
 import { useState } from 'react';
+
+import Masonry from '@mui/lab/Masonry';
+import './App.css'
+
+
 
 const api = createApi({
   // Don't forget to set your access token here!
@@ -13,15 +17,15 @@ const api = createApi({
 });
 
 function App() {
-  const [data, setPhotosResponse] = useState(null);
+  const [data, setPhotosResponse] = useState([]);
 
 console.log(data)
 
   useEffect(() => {
     api.search
-      .getPhotos({ query: "cat", orientation: "landscape" })
+      .getPhotos({ query: "perros" })
       .then(result => {
-        setPhotosResponse(result);
+        setPhotosResponse(result.response.results);
       })
       .catch(() => {
         console.log("something went wrong!");
@@ -29,9 +33,14 @@ console.log(data)
   }, []);
 
   return (
-    <>
+    <div className=''>
      <NavBar/>
-    </>
+     <Masonry columns={4} spacing={2}>
+     {data.map(item=> (
+       <img key={item.id} src={item.urls.thumb} alt={item.description} />
+       ))}
+     </Masonry>
+    </div>
   )
 }
 
